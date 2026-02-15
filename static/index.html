@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pycasso – Contrôle Raspberry Pi</title>
+  <style>
+    body {font-family: Arial, sans-serif; margin: 2rem;}
+    textarea {width: 100%; height: 4rem; margin-top: .5rem;}
+    button {margin-top: .5rem; padding: .5rem 1rem;}
+    .msg {color: green; margin-top: .5rem;}
+    .err {color: red; margin-top: .5rem;}
+  </style>
+</head>
+<body>
+  <h1>Pycasso – Interface de contrôle</h1>
+
+  <!-- Prompt -->
+  <section>
+    <label for="prompt">Prompt (prompts.txt)</label>
+    <textarea id="prompt" placeholder="ex. paysage, coucher de soleil"></textarea>
+    <button id="savePrompt">Mettre à jour prompts.txt</button>
+    <div id="msgPrompt" class="msg"></div>
+    <div id="errPrompt" class="err"></div>
+  </section>
+
+  <!-- Subjects -->
+  <section>
+    <label for="subjects">Subjects (subjects.txt)</label>
+    <textarea id="subjects" placeholder="ex. montagne, lac"></textarea>
+    <button id="saveSubjects">Mettre à jour subjects.txt</button>
+    <div id="msgSubjects" class="msg"></div>
+    <div id="errSubjects" class="err"></div>
+  </section>
+
+  <!-- Artists -->
+  <section>
+    <label for="artists">Artistes (artistes.txt)</label>
+    <textarea id="artists" placeholder="ex. Monet, Van Gogh"></textarea>
+    <button id="saveArtists">Mettre à jour artistes.txt</button>
+    <div id="msgArtists" class="msg"></div>
+    <div id="errArtists" class="err"></div>
+  </section>
+
+  <!-- Restart -->
+  <section>
+    <button id="restartBtn" style="background:#c33;color:#fff;">
+      Relancer le service Pycasso
+    </button>
+    <div id="msgRestart" class="msg"></div>
+    <div id="errRestart" class="err"></div>
+  </section>
+
+  <script>
+    // Helper to clear messages
+    const clear = (msg, err) => {msg.textContent=''; err.textContent='';};
+
+    // Generic POST helper
+    async function post(endpoint, payload) {
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      return resp.json().then(data => ({ok: resp.ok, data}));
+    }
+
+    // Prompt
+    document.getElementById('savePrompt').addEventListener('click', async () => {
+      const txt = document.getElementById('prompt').value.trim();
+      const msg = document.getElementById('msgPrompt');
+      const err = document.getElementById('errPrompt');
+      clear(msg, err);
+      if (!txt) { err.textContent='Veuillez saisir un texte.'; return; }
+      const r = await post('/api/prompt', {text: txt});
+      r.ok ? msg.textContent='Fichier mis à jour.' : err.textContent=`Erreur : ${r.data.detail||'inconnue'}`;
+    });
+
+    // Subjects
+    document.getElementById('saveSubjects').addEventListener('click', async () => {
+      const txt = document.getElementById('subjects').value.trim();
+      const msg = document.getElementById('msgSubjects');
+      const err = document.getElementById('errSubjects');
+      clear(msg, err);
+      if (!txt) { err.textContent='Veuillez saisir un texte.'; return; }
+      const r = await post('/api/subjects', {text: txt});
+      r.ok ? msg.textContent='Fichier mis à jour.' : err.textContent=`Erreur : ${r.data.detail||'inconnue'}`;
+    });
+
+    // Artists
+    document.getElementById('saveArtists').addEventListener('click', async () => {
+      const txt = document.getElementById('artists').value.trim();
+      const msg = document.getElementById('msgArtists');
+      const err = document.getElementById('errArtists');
+      clear(msg, err);
+      if (!txt) { err.textContent='Veuillez saisir un texte.'; return; }
+      const r = await post('/api/artists', {text: txt});
+      r.ok ? msg.textContent='Fichier mis à jour.' : err.textContent=`Erreur : ${r.data.detail||'inconnue'}`;
+    });
+
+    // Restart
+    document.getElementById('restartBtn').addEventListener('click', async () => {
+      const msg = document.getElementById('msgRestart');
+      const err = document.getElementById('errRestart');
+      clear(msg, err);
+      if (!confirm('Confirmer le redémarrage du service Pycasso ?')) return;
+      const r = await post('/api/restart', {});
+      r.ok ? msg.textContent=r.data.detail : err.textContent=`Erreur : ${r.data.detail||'inconnue'}`;
+    });
+  </script>
+</body>
+</html>
