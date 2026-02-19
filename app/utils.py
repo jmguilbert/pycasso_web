@@ -9,10 +9,8 @@ PYCASO_PROMPT_DIR = Path("/home/jmguilbert/pycasso/prompts")
 
 PROMPT_FILE   = PYCASO_PROMPT_DIR / "prompts.txt"
 SUBJECTS_FILE = PYCASO_PROMPT_DIR / "subjects.txt"
-ARTISTS_FILE  = PYCASO_PROMPT_DIR / "artists.txt"   # <-- renommé
+ARTISTS_FILE  = PYCASO_PROMPT_DIR / "artists.txt"   # ← renommé
 
-# ----------------------------------------------------------------------
-# Fonction interne d’écriture
 # ----------------------------------------------------------------------
 def _write_file(path: Path, content: str) -> None:
     """Écrase le fichier avec le texte fourni (une ligne terminée par '\\n')."""
@@ -23,19 +21,16 @@ def _write_file(path: Path, content: str) -> None:
 # Fonctions d’enregistrement des mots‑clefs
 # ----------------------------------------------------------------------
 def save_prompt(text: str) -> dict:
-    """Sauvegarde le texte dans prompts.txt."""
     _write_file(PROMPT_FILE, text)
     return {"file": str(PROMPT_FILE), "content": text.strip()}
 
 
 def save_subjects(text: str) -> dict:
-    """Sauvegarde le texte dans subjects.txt."""
     _write_file(SUBJECTS_FILE, text)
     return {"file": str(SUBJECTS_FILE), "content": text.strip()}
 
 
 def save_artists(text: str) -> dict:
-    """Sauvegarde le texte dans artists.txt (nouveau nom)."""
     _write_file(ARTISTS_FILE, text)
     return {"file": str(ARTISTS_FILE), "content": text.strip()}
 
