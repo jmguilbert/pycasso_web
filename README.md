@@ -56,3 +56,9 @@ sudo systemctl start pycasso-web.service
 
 # Vérifiez le statut
 sudo systemctl status pycasso-web.service
+
+Utilisation
+Accédez à http://<IP_PI>:8000/.
+Saisissez vos mots‑clefs dans les trois champs et cliquez sur « Enregistrer » pour chaque fichier.
+Cliquez sur « Relancer le service Pycasso » pour appliquer les changements immédiatement.
+Les réponses JSON de l’API sont affichées en vert (succès) ou en rouge (erreur) dans la page.
