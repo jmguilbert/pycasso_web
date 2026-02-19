@@ -1,0 +1,17 @@
+# /etc/systemd/system/pycasso-web.service
+[Unit]
+Description=FastAPI interface for Pycasso
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/jmguilbert/pycasso_web
+ExecStart=/home/jmguilbert/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+User=jmguilbert
+Group=jmguilbert
+Environment=PATH=/home/jmguilbert/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# (optionnel) LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
